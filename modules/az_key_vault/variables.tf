@@ -1,4 +1,6 @@
 variable "subscription_id" {}
+variable "environmnet" {}
+variable "service_prefix" {}
 
 variable "location" {
   type        = string
