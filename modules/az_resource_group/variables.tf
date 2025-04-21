@@ -2,7 +2,7 @@ variable "location" {
   type        = string
   description = "Azure region where the resource should be deployed."
   nullable    = false
-  default     = "North Europe"
+  # default     = "North Europe"
 }
 
 variable "service_prefix" {
