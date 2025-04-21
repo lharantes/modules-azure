@@ -1,6 +1,6 @@
 resource "azurerm_key_vault" "this" {
   location                        = var.location
-  name                            = var.name
+  name                            = lower("kv-bdso-${lookup(local.regions, var.location, false)}-${var.service_prefix}-${var.environment}")var.name
   resource_group_name             = var.resource_group_name
   sku_name                        = var.sku_name
   tenant_id                       = var.tenant_id
