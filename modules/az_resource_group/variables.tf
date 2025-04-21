@@ -21,3 +21,6 @@ variable "environment" {
     error_message = "Environment name must have one of: 'prd', 'dev', 'qua'."
   }
 }
+
+variable "subscription_id" {}
+variable "tenant_id" {}
