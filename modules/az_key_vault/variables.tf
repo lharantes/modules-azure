@@ -1,5 +1,5 @@
 variable "subscription_id" {}
-variable "environmnet" {}
+variable "environment" {}
 variable "service_prefix" {}
 
 variable "location" {
