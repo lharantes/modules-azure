@@ -1,6 +1,6 @@
 locals {
   regions = {
-    # northeurope    = "ne"
+    northeurope    = "ne"
     "North Europe" = "ne"
   }
 }
