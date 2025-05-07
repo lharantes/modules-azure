@@ -38,3 +38,4 @@ terraform.rc
 
 # Ignore provider.tf
 provider.tf
+.DS_Store
