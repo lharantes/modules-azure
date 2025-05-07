@@ -11,7 +11,7 @@ variable "location" {
 variable "name" {
   type        = string
   description = "The name of the Key Vault."
-  default = "kkkk"
+  default     = "kkkk"
 
   validation {
     condition     = can(regex("^[a-zA-Z0-9-]{3,24}$", var.name))

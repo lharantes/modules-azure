@@ -8,7 +8,7 @@ data "azurerm_client_config" "current" {}
 
 resource "azurerm_mssql_server" "this" {
   location                                     = try(data.azurerm_resource_group.parent[0].location, var.location)
-  name                                         = var.name # calling code must supply the name
+  name                                         = lower("azpds${lookup(local.environment, var.environment, false)}${format("%04d", var.suffix)}") #var.name # calling code must supply the name
   resource_group_name                          = var.resource_group_name
   version                                      = var.server_version
   administrator_login                          = var.administrator_login
@@ -46,7 +46,7 @@ resource "azurerm_management_lock" "this" {
   count = var.lock != null ? 1 : 0
 
   lock_level = var.lock.kind
-  name       = coalesce(var.lock.name, "lock-${var.name}")
+  name       = coalesce(var.lock.name, "lock-${lower("azpds${lookup(local.environment, var.environment, false)}${format("%04d", var.suffix)}")}")
   scope      = azurerm_mssql_server.this.id
 }
 
@@ -66,7 +66,7 @@ resource "azurerm_role_assignment" "this" {
 resource "azurerm_monitor_diagnostic_setting" "this" {
   for_each = var.diagnostic_settings
 
-  name                           = each.value.name != null ? each.value.name : "diag-${var.name}"
+  name                           = each.value.name != null ? each.value.name : "diag-${lower("azpds${lookup(local.environment, var.environment, false)}${format("%04d", var.suffix)}")}"
   target_resource_id             = azurerm_mssql_server.this.id
   eventhub_authorization_rule_id = each.value.event_hub_authorization_rule_resource_id
   eventhub_name                  = each.value.event_hub_name

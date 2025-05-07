@@ -1,9 +1,9 @@
-
-resource "azurerm_private_endpoint" "this" {
+# The PE resource when we are managing the private_dns_zone_group block:
+resource "azurerm_private_endpoint" "this_managed_dns_zone_groups" {
   for_each = { for k, v in var.private_endpoints : k => v if var.private_endpoints_manage_dns_zone_group }
 
-  location                      = try(data.azurerm_resource_group.parent[0].location, coalesce(each.value.location, var.location))
-  name                          = each.value.name != null ? each.value.name : "pe-${lower("azpds${lookup(local.environment, var.environment, false)}${format("%04d", var.suffix)}")}"
+  location                      = each.value.location != null ? each.value.location : var.location
+  name                          = each.value.name != null ? each.value.name : "pe-${lower("azpdg${lookup(local.environment, var.environment, false)}${format("%04d", var.suffix)}")}"
   resource_group_name           = each.value.resource_group_name != null ? each.value.resource_group_name : var.resource_group_name
   subnet_id                     = each.value.subnet_resource_id
   custom_network_interface_name = each.value.network_interface_name
@@ -11,9 +11,9 @@ resource "azurerm_private_endpoint" "this" {
 
   private_service_connection {
     is_manual_connection           = false
-    name                           = each.value.private_service_connection_name != null ? each.value.private_service_connection_name : "pse-${lower("azpds${lookup(local.environment, var.environment, false)}${format("%04d", var.suffix)}")}"
-    private_connection_resource_id = azurerm_mssql_server.this.id
-    subresource_names              = ["sqlServer"]
+    name                           = each.value.private_service_connection_name != null ? each.value.private_service_connection_name : "pse-${lower("azpdg${lookup(local.environment, var.environment, false)}${format("%04d", var.suffix)}")}"
+    private_connection_resource_id = azurerm_postgresql_flexible_server.this.id
+    subresource_names              = ["postgresqlServer"]
   }
   dynamic "ip_configuration" {
     for_each = each.value.ip_configurations
@@ -21,8 +21,8 @@ resource "azurerm_private_endpoint" "this" {
     content {
       name               = ip_configuration.value.name
       private_ip_address = ip_configuration.value.private_ip_address
-      member_name        = "sqlServer"
-      subresource_name   = "sqlServer"
+      member_name        = "postgresqlServer"
+      subresource_name   = "postgresqlServer"
     }
   }
   dynamic "private_dns_zone_group" {
@@ -35,12 +35,14 @@ resource "azurerm_private_endpoint" "this" {
   }
 }
 
-# The PE resource when we are **not** managing the private_dns_zone_group block, such as when using Azure Policy:
+# The PE resource when we are managing **not** the private_dns_zone_group block
+# An example use case is customers using Azure Policy to create private DNS zones
+# e.g. <https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/private-link-and-dns-integration-at-scale>
 resource "azurerm_private_endpoint" "this_unmanaged_dns_zone_groups" {
   for_each = { for k, v in var.private_endpoints : k => v if !var.private_endpoints_manage_dns_zone_group }
 
-  location                      = try(data.azurerm_resource_group.parent[0].location, coalesce(each.value.location, var.location))
-  name                          = each.value.name != null ? each.value.name : "pe-${lower("azpds${lookup(local.environment, var.environment, false)}${format("%04d", var.suffix)}")}"
+  location                      = each.value.location != null ? each.value.location : var.location
+  name                          = each.value.name != null ? each.value.name : "pe-${lower("azpdg${lookup(local.environment, var.environment, false)}${format("%04d", var.suffix)}")}"
   resource_group_name           = each.value.resource_group_name != null ? each.value.resource_group_name : var.resource_group_name
   subnet_id                     = each.value.subnet_resource_id
   custom_network_interface_name = each.value.network_interface_name
@@ -49,8 +51,8 @@ resource "azurerm_private_endpoint" "this_unmanaged_dns_zone_groups" {
   private_service_connection {
     is_manual_connection           = false
     name                           = each.value.private_service_connection_name != null ? each.value.private_service_connection_name : "pse-${lower("azpds${lookup(local.environment, var.environment, false)}${format("%04d", var.suffix)}")}"
-    private_connection_resource_id = azurerm_mssql_server.this.id
-    subresource_names              = ["sqlServer"]
+    private_connection_resource_id = azurerm_postgresql_flexible_server.this.id
+    subresource_names              = ["postgresqlServer"]
   }
   dynamic "ip_configuration" {
     for_each = each.value.ip_configurations
@@ -58,8 +60,8 @@ resource "azurerm_private_endpoint" "this_unmanaged_dns_zone_groups" {
     content {
       name               = ip_configuration.value.name
       private_ip_address = ip_configuration.value.private_ip_address
-      member_name        = "sqlServer"
-      subresource_name   = "sqlServer"
+      member_name        = "postgresqlServer"
+      subresource_name   = "postgresqlServer"
     }
   }
 
@@ -72,5 +74,5 @@ resource "azurerm_private_endpoint_application_security_group_association" "this
   for_each = local.private_endpoint_application_security_group_associations
 
   application_security_group_id = each.value.asg_resource_id
-  private_endpoint_id           = azurerm_private_endpoint.this[each.value.pe_key].id
+  private_endpoint_id           = var.private_endpoints_manage_dns_zone_group ? azurerm_private_endpoint.this_managed_dns_zone_groups[each.value.pe_key].id : azurerm_private_endpoint.this_unmanaged_dns_zone_groups[each.value.pe_key].id
 }
