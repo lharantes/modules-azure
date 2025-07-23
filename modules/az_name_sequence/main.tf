@@ -9,7 +9,7 @@ data "azurerm_storage_table_entity" "this" {
   row_key          = var.row_key
 }
 
-resource "azurerm_storage_table_entity" "this" {
+resource "azurerm_storage_table_entity" "suffix" {
   storage_table_id = data.azurerm_storage_table.this.id
 
   partition_key = var.partition_key
