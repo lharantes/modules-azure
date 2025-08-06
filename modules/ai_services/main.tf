@@ -1,7 +1,8 @@
 /**
  * # Azure AI Services
  *
- * O Azure AI Search é uma infraestrutura de pesquisa escalonável que indexa conteúdo heterogêneo e permite a recuperação por meio de APIs, aplicativos e agentes de IA.
+ * Azure AI services help developers and organizations rapidly create intelligent, cutting-edge, market-ready, and responsible applications with out-of-the-box and prebuilt and customizable APIs and models. Example
+ * applications include natural language processing for conversations, search, monitoring, translation, speech, vision, and decision-making.
  */
 
 

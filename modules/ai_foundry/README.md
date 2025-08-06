@@ -6,6 +6,10 @@ corporativas de IA, construtores de modelos e desenvolvimento de aplicativos. Es
 infraestrutura de nível de produção com interfaces amigáveis, permitindo que os desenvolvedores se
 concentrem na criação de aplicativos em vez de gerenciar a infraestrutura.
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -17,8 +21,6 @@ concentrem na criação de aplicativos em vez de gerenciar a infraestrutura.
 | Name | Type |
 |------|------|
 | [azurerm_ai_foundry.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/ai_foundry) | resource |
-| [azurerm_application_insights.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_insights) | resource |
-| [azurerm_log_analytics_workspace.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace) | resource |
 | [azurerm_private_endpoint.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_private_dns_zone.dns_zone](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/private_dns_zone) | data source |
 
@@ -53,16 +55,13 @@ module "foundry" {
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | The name of the Resource Group where the AI Foundry Hub should exist. Changing this forces a new AI Foundry Hub to be created. | `string` | n/a | yes |
 | <a name="input_service_prefix"></a> [service\_prefix](#input\_service\_prefix) | Prefix or name of the project. | `string` | n/a | yes |
 | <a name="input_storage_account_id"></a> [storage\_account\_id](#input\_storage\_account\_id) | The Storage Account ID that should be used by this AI Foundry Hub. Changing this forces a new AI Foundry Hub to be created. | `string` | n/a | yes |
-| <a name="input_application_insights"></a> [application\_insights](#input\_application\_insights) | There is a Application Insights ID that should be used by this AI Foundry Hub. | `bool` | `true` | no |
-| <a name="input_application_type"></a> [application\_type](#input\_application\_type) | Specifies the type of Application Insights to create. | `string` | `"web"` | no |
+| <a name="input_application_insights_id"></a> [application\_insights\_id](#input\_application\_insights\_id) | There is a Application Insights ID that should be used by this AI Foundry Hub. | `string` | `""` | no |
 | <a name="input_dns_resource_group_name"></a> [dns\_resource\_group\_name](#input\_dns\_resource\_group\_name) | Private dns for the private endpoint. | `string` | `""` | no |
 | <a name="input_enable_private_endpoint"></a> [enable\_private\_endpoint](#input\_enable\_private\_endpoint) | Enabled private endpoint connection. | `bool` | `true` | no |
 | <a name="input_friendly_name"></a> [friendly\_name](#input\_friendly\_name) | The display name of this AI Foundry Hub. | `string` | `""` | no |
 | <a name="input_identity"></a> [identity](#input\_identity) | A identity and possibles values are SystemAssigned, UserAssigned, and SystemAssigned, UserAssigned. | <pre>object({<br/>    type         = string<br/>    identity_ids = optional(list(string), [])<br/>  })</pre> | <pre>{<br/>  "type": "SystemAssigned"<br/>}</pre> | no |
 | <a name="input_managed_network"></a> [managed\_network](#input\_managed\_network) | Different configuration modes for outbound traffic from the managed virtual network. | `string` | `"Disabled"` | no |
 | <a name="input_public_network_access"></a> [public\_network\_access](#input\_public\_network\_access) | Whether public network access for this AI Service Hub should be enabled. | `string` | `"Disabled"` | no |
-| <a name="input_retention_in_days"></a> [retention\_in\_days](#input\_retention\_in\_days) | Specifies the retention period in days. | `number` | `90` | no |
-| <a name="input_sku_log_analytics"></a> [sku\_log\_analytics](#input\_sku\_log\_analytics) | Specifies the SKU of the Log Analytics Workspace. | `string` | `"PerGB2018"` | no |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | Subnet ID for the private endpoint. | `string` | `""` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Optional tags to add to resources. | `map(string)` | `{}` | no |
 
